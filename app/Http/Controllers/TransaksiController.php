@@ -32,6 +32,12 @@ class TransaksiController extends Controller
     public function store(Request $request)
     {
         $tiket = Tiket::find($request->id);
+        if($tiket->stok < $request->jumlah_tiket){
+            return response()->json([
+                'status' => 418,
+                'message' => "stok kurang"
+            ], 418);
+        }
         $harga_tiket = $tiket->harga;
         $total_harga = $request->jumlah_tiket * $harga_tiket;
         if($total_harga != 0){
@@ -97,6 +103,12 @@ class TransaksiController extends Controller
         if($request->id != null){
             $transaksis = Transaksi::find($id);
             $tiket = Tiket::find($request->id);
+            if($tiket->stok < $request->jumlah_tiket){
+                return response()->json([
+                    'status' => 418,
+                    'message' => "stok kurang"
+                ], 418);
+            }
             $harga_tiket = $tiket->harga;
             $total_harga = $request->jumlah_tiket * $harga_tiket;
             $tiket->stok = $tiket->stok - $request->jumlah_tiket;
